@@ -25,35 +25,27 @@ public class App
 			e.printStackTrace();
 		}
     	
-    	Integer twoOccurances = 0;
-    	Integer threeOccurances = 0;
-    	
-    	boolean twoCounted = false;
-    	boolean threeCounted = false;
+    	Integer differPos = 0;
     	
     	for (String item : allLines) {
-    		twoCounted = false;
-    		threeCounted = false;
-    		do {
-    		    char c = item.charAt(0);
-    		    int count = 0;
-    		    for(int j=0; j < item.length(); j++)
+    		for (String compareItem : allLines) {
+    			Integer differences = 0;
+    			for(int i=0; i < item.length(); i++)
     		    {    
-    		    	if(item.charAt(j) == c)
-    		            count++;
+    		    	if (item.charAt(i) != compareItem.charAt(i)) {
+    		    		differences++;
+    		    		differPos = i;
+    		    	}
+    		    	if (differences > 1) {
+    		    		break;
+    		    	}
     		    }
-    		    item = item.replace(String.valueOf(c), "");
-    		    if (count == 2 && twoCounted == false) {
-    		    	twoOccurances++;
-    		    	twoCounted = true;
-    		    }
-    		    if (count == 3 && threeCounted == false) {
-    		    	threeOccurances++;
-    		    	threeCounted = true;
-    		    }
-    		} while (item.length() > 0);
+    			if (differences == 1) {
+    				item = item.replace(String.valueOf(item.charAt(differPos)), "");
+    				System.out.println( "answer is: " + item);
+    			}
+    		}
     	}
     	
-    	System.out.println( "answer is: " + twoOccurances * threeOccurances );
     }
 }
