@@ -28,7 +28,7 @@ public class App
 		}
     	Integer[][] multiArray = new Integer[1000][1000];
     	
-    	String patternString = "#\\d+ @ (\\d+),(\\d+): (\\d+)x(\\d+)";
+    	String patternString = "#(\\d+) @ (\\d+),(\\d+): (\\d+)x(\\d+)";
     	Pattern pattern = Pattern.compile(patternString);
     	
     	for (String line : allLines) {
@@ -36,10 +36,10 @@ public class App
             Matcher matcher = pattern.matcher(line);
 
             while(matcher.find()) {
-            	int leftPos = Integer.parseInt(matcher.group(1));
-            	int topPos = Integer.parseInt(matcher.group(2));
-            	int width = Integer.parseInt(matcher.group(3));
-            	int height = Integer.parseInt(matcher.group(4));
+            	int leftPos = Integer.parseInt(matcher.group(2));
+            	int topPos = Integer.parseInt(matcher.group(3));
+            	int width = Integer.parseInt(matcher.group(4));
+            	int height = Integer.parseInt(matcher.group(5));
             	for (int x = leftPos; x < leftPos + width; x++) {
             		for (int y = topPos; y < topPos + height; y++) {
             			if (multiArray[x] != null && multiArray[x][y] != null) {
@@ -53,15 +53,28 @@ public class App
             }
     	}
     	
-    	int amount = 0;
-    	for (int x = 0; x < multiArray.length; x++) {
-    		for (int y = 0; y < multiArray[x].length; y++) {
-    			if (multiArray[x] != null && multiArray[x][y] != null && multiArray[x][y] > 1) {
-    				amount++;
-    			}
-    		}
+		for (String line : allLines) {
+			boolean overlap = false;
+    		
+            Matcher matcher = pattern.matcher(line);
+
+            while(matcher.find()) {
+            	int id = Integer.parseInt(matcher.group(1));
+            	int leftPos = Integer.parseInt(matcher.group(2));
+            	int topPos = Integer.parseInt(matcher.group(3));
+            	int width = Integer.parseInt(matcher.group(4));
+            	int height = Integer.parseInt(matcher.group(5));
+            	for (int x = leftPos; x < leftPos + width; x++) {
+            		for (int y = topPos; y < topPos + height; y++) {
+            			if (multiArray[x][y] > 1) {
+            				overlap = true;
+            			}
+            		}
+            	}
+            	if (!overlap) {
+            		System.out.println( "answer is: " + id );
+            	}
+            }
     	}
-    	
-    	System.out.println( "answer is: " + amount );
     }
 }
