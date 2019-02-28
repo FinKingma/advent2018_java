@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Hello world!
@@ -24,28 +26,42 @@ public class App
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    	Integer[][] multiArray = new Integer[1000][1000];
     	
-    	Integer differPos = 0;
+    	String patternString = "#\\d+ @ (\\d+),(\\d+): (\\d+)x(\\d+)";
+    	Pattern pattern = Pattern.compile(patternString);
     	
-    	for (String item : allLines) {
-    		for (String compareItem : allLines) {
-    			Integer differences = 0;
-    			for(int i=0; i < item.length(); i++)
-    		    {    
-    		    	if (item.charAt(i) != compareItem.charAt(i)) {
-    		    		differences++;
-    		    		differPos = i;
-    		    	}
-    		    	if (differences > 1) {
-    		    		break;
-    		    	}
-    		    }
-    			if (differences == 1) {
-    				item = item.replace(String.valueOf(item.charAt(differPos)), "");
-    				System.out.println( "answer is: " + item);
+    	for (String line : allLines) {
+    		
+            Matcher matcher = pattern.matcher(line);
+
+            while(matcher.find()) {
+            	int leftPos = Integer.parseInt(matcher.group(1));
+            	int topPos = Integer.parseInt(matcher.group(2));
+            	int width = Integer.parseInt(matcher.group(3));
+            	int height = Integer.parseInt(matcher.group(4));
+            	for (int x = leftPos; x < leftPos + width; x++) {
+            		for (int y = topPos; y < topPos + height; y++) {
+            			if (multiArray[x] != null && multiArray[x][y] != null) {
+            				int currentValue = multiArray[x][y];
+            				multiArray[x][y] = currentValue + 1;
+            			} else {
+            				multiArray[x][y] = 1;
+            			}
+            		}
+            	}
+            }
+    	}
+    	
+    	int amount = 0;
+    	for (int x = 0; x < multiArray.length; x++) {
+    		for (int y = 0; y < multiArray[x].length; y++) {
+    			if (multiArray[x] != null && multiArray[x][y] != null && multiArray[x][y] > 1) {
+    				amount++;
     			}
     		}
     	}
     	
+    	System.out.println( "answer is: " + amount );
     }
 }
